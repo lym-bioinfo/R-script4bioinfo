@@ -1,0 +1,205 @@
+#input micro-array expression data and probe id annotation data
+db <- read.csv('db.csv', header = T)
+ID <- read.csv('ID.csv', header = F)
+#load necessary package
+library(dplyr)
+#data formatting for further analyzing
+format_1 <- merge(db, ID, by.x = 'X', by.y = 'V2') %>% select(-X)
+format_2 <- aggregate(x = format_1[,1:ncol(format_1) - 1],
+                            by = list(format_1$V1),
+                            FUN = mean)
+format_3 <- format_2
+rownames(format_3) <- format_3[, 1]
+format_3 <- format_3[, -1]
+format_4 <- t(format_3)
+format_5 <- as.data.frame(format_4)
+#save formatted data
+save(format_5, db, file = 'k.RData')
+#load formatted data
+load('k.RData')
+#create an expression matrix for DP bio-synthetic genes
+diterpene.genes <- format_5 %>%
+  select('Os02g0571100', 'Os04g0178300', 
+         'Os04g0179700', 'Os02g0570400', 
+         'Os01g0196300', 'Os04g0178400',
+         'Os04g0179200', 'Os04g0180400',
+         'Os02g0569000', 'Os02g0569400',
+         'Os02g0569900', 'Os02g0570500',
+         'Os02g0570700', 'Os02g0571900',
+         'Os04g0637000', 'Os11g0152700',
+         'Os01g0561600')
+#create an expression matrix for query genes
+list <- c("Os01g0104200",
+          "Os01g0108600",
+          "Os01g0128000",
+          "Os01g0129600",
+          "Os01g0165000",
+          "Os01g0185900",
+          "Os01g0186000",
+          "Os01g0192300",
+          "None",
+          "Os01g0196300",
+          "Os01g0246700",
+          "Os01g0274800",
+          "Os01g0313300",
+          "Os01g0542700",
+          "Os01g0586800",
+          "Os01g0603300",
+          "Os01g0626400",
+          "Os01g0645000",
+          "Os01g0646300",
+          "Os01g0702700",
+          "Os01g0705700",
+          "Os01g0714800",
+          "Os01g0723500",
+          "Os01g0785900",
+          "Os01g0797600",
+          "Os01g0816100",
+          "Os01g0821300",
+          "Os01g0838600",
+          "Os01g0839100",
+          "Os01g0862800",
+          "Os01g0863300",
+          "Os01g0868000",
+          "Os01g0874300",
+          "Os01g0922600",
+          "Os01g0948200",
+          "Os01g0954500",
+          "Os02g0139000",
+          "Os02g0164900",
+          "Os02g0165400",
+          "Os02g0168200",
+          "Os02g0191600",
+          "Os02g0194900",
+          "Os02g0521100",
+          "None",
+          "Os02g0579600",
+          "Os02g0641300",
+          "Os02g0656600",
+          "Os02g0657000",
+          "Os02g0705500",
+          "Os02g0770500",
+          "Os02g0781300",
+          "Os02g0806300",
+          "Os03g0120900",
+          "Os03g0123500",
+          "Os03g0287400",
+          "Os03g0321700",
+          "Os03g0325600",
+          "Os03g0327100",
+          "Os03g0437100",
+          "Os03g0437200",
+          "Os03g0650000",
+          "Os03g0720800",
+          "Os03g0741100",
+          "Os03g0764100",
+          "Os03g0764200",
+          "Os03g0796900",
+          "Os03g0838800",
+          "Os03g0860100",
+          "Os04g0398000",
+          "Os04g0517100",
+          "Os04g0543500",
+          "Os04g0549700",
+          "Os04g0557500",
+          "Os04g0581400",
+          "Os04g0619000",
+          "Os04g0678400",
+          "Os05g0123000",
+          "Os05g0140100",
+          "Os05g0162800",
+          "Os05g0163900",
+          "Os05g0183100",
+          "Os05g0361700",
+          "Os05g0386201",
+          "Os05g0429900",
+          "Os05g0437050",
+          "None",
+          "Os05g0442400",
+          "Os05g0475600",
+          "Os05g0497200",
+          "Os05g0497300",
+          "Os05g0541400",
+          "Os05g0543600",
+          "Os05g0553400",
+          "Os05g0563000",
+          "Os05g0569300",
+          "Os05g0573500",
+          "Os05g0583000",
+          "Os06g0105350",
+          "Os06g0146250",
+          "Os06g0332700",
+          "Os06g0649000",
+          "Os06g0662200",
+          "Os06g0670300",
+          "Os06g0702600",
+          "Os06g0703500",
+          "Os07g0410700",
+          "Os07g0432800",
+          "Os07g0580500",
+          "Os07g0590100",
+          "Os07g0628500",
+          "Os07g0634900",
+          "Os07g0674800",
+          "Os07g0685700",
+          "Os08g0130100",
+          "Os08g0151300",
+          "Os08g0157700",
+          "Os08g0200600",
+          "None",
+          "Os08g0357300",
+          "Os08g0490000",
+          "Os08g0545500",
+          "Os09g0106700",
+          "Os09g0280500",
+          "Os09g0290700",
+          "Os09g0379600",
+          "Os09g0414500",
+          "Os09g0431300",
+          "Os09g0431900",
+          "Os09g0475400",
+          "Os09g0540800",
+          "Os10g0371100",
+          "Os10g0478300",
+          "Os10g0560700",
+          "Os10g0575000",
+          "Os11g0117400",
+          "Os11g0117500",
+          "Os11g0126900",
+          "Os11g0127600",
+          "Os11g0128300",
+          "Os11g0129700",
+          "Os11g0442500",
+          "Os11g0490900",
+          "Os11g0684000",
+          "Os12g0116600",
+          "Os12g0116700",
+          "Os12g0123700",
+          "Os12g0123800",
+          "Os12g0124500",
+          "Os12g0238000",
+          "Os12g0560900",
+          "Os12g0560900",
+          "Os12g0564100",
+          "Os12g0583700",
+          "Os12g0597700",
+          "Os12g0632600",
+          "Os12g0634500")
+#filter out genes which don't have expression info in micro-array data 
+#and delete them
+coln <- colnames(format_5)
+red <- list[which(list%in%coln)]
+MYC2 <- format_5 %>%
+  select(red)
+#create a function for Pearson Correlation Coefficient
+pearson <- function(col){
+    cor.matrix <- cor(diterpene.genes, col, method = 'pearson')
+    return(cor.matrix)
+}
+#apply the function created just now to perform Pearson Correlation Coefficient by col
+pearson.test<- apply(X = MYC2, MARGIN = 2, FUN = pearson)
+
+#output final data
+final.dat <- t(pearson.test) 
+colnames(final.dat) <- colnames(diterpene.genes)
+write.csv(final.dat, 'VCdowntransfac.csv')

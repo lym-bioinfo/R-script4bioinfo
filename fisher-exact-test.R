@@ -32,5 +32,5 @@ fisher.exact.test.q <- p.adjust(p = fisher.exact.test,
 
 out_up_GO <- cbind(GO_df_for_test, fisher.exact.test, fisher.exact.test.q) %>%
   select(A, AC, AB, N, fisher.exact.test, fisher.exact.test.q) %>%
-  rename(gene.number.in.DEG = A, gene.number.in.genome = AC, all.gene.number.in.DEG = AB, total.number = N,
+  rename(certain.COG.gene.number.in.DEG = A, certain.COG.gene.number.in.genome = AC, all.gene.number.in.DEG = AB, total.number = N,
          p.value = fisher.exact.test, FDR = fisher.exact.test.q)

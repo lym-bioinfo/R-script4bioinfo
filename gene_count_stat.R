@@ -1,0 +1,7 @@
+data <- read.csv("xx.csv", header = TRUE)
+values <- as.vector(as.matrix(data))
+cleaned_values <- gsub("\\.[0-9]+$", "", values)
+count_table <- table(cleaned_values)
+result <- as.data.frame(count_table)
+print(result)
+write.csv(result, "count_result.csv", row.names = FALSE)

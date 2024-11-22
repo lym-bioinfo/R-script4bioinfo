@@ -17,6 +17,8 @@ awk '/^>/ {
     header = substr($0, 2)  # 去掉 ">"
     filename_part = substr(header, 1, index(header, " ") - 1)
     if (!filename_part) filename_part = header  # 如果没有空格，使用完整头部
+    # 替换文件名中的非法字符为下划线
+    gsub(/[^a-zA-Z0-9._-]/, "_", filename_part)
     filename = output_dir "/" filename_part ".fasta"
     seq = ""
     next

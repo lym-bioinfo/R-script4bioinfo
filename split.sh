@@ -13,9 +13,11 @@ awk '/^>/ {
         # 将之前的序列保存到文件
         print seq > filename
     }
-    # 设置新文件名，基于序列的头信息
+    # 提取头部第一个空格前的内容作为文件名
     header = substr($0, 2)  # 去掉 ">"
-    filename = output_dir "/" header ".fasta"
+    filename_part = substr(header, 1, index(header, " ") - 1)
+    if (!filename_part) filename_part = header  # 如果没有空格，使用完整头部
+    filename = output_dir "/" filename_part ".fasta"
     seq = ""
     next
 }
